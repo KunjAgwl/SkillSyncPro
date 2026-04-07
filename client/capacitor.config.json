@@ -1,0 +1,9 @@
+{
+  "appId": "com.skillsync.ai",
+  "appName": "SkillSync",
+  "webDir": "dist",
+  "server": {
+    "url": "http://10.66.206.68:5173",
+    "cleartext": true
+  }
+}

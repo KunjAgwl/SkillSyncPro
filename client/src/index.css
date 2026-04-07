@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background-light dark:bg-background-dark text-text-main dark:text-gray-200 transition-colors duration-300;
+    font-family: 'Manrope', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer components {
+  /* Neumorphic Shadow Utilities */
+  .neu-flat {
+    @apply shadow-neu-flat dark:shadow-neu-flat-dark bg-surface-light dark:bg-surface-dark;
+  }
+  
+  .neu-pressed {
+    @apply shadow-neu-pressed dark:shadow-neu-pressed-dark bg-surface-light dark:bg-surface-dark;
+  }
+  
+  .neu-button {
+    @apply shadow-neu-button dark:shadow-neu-button-dark bg-surface-light dark:bg-surface-dark 
+           active:shadow-neu-button-active dark:active:shadow-neu-button-active transition-all duration-200;
+  }
+  
+  .neu-icon {
+    @apply shadow-neu-icon dark:shadow-neu-flat-dark bg-surface-light dark:bg-surface-dark;
+  }
+}
+
+/* Custom Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Transitions */
+.page-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
