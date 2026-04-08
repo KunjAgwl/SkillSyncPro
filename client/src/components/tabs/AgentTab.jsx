@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const AgentTab = ({ messages, sendMessageToAgent, isAgentThinking }) => {
+const AgentTab = ({ messages, sendMessageToAgent, isAgentThinking, triggerHaptic }) => {
   const [input, setInput] = useState('');
   const chatEndRef = useRef(null);
 
@@ -14,6 +14,7 @@ const AgentTab = ({ messages, sendMessageToAgent, isAgentThinking }) => {
 
   const handleSend = () => {
     if (!input.trim()) return;
+    triggerHaptic();
     sendMessageToAgent(input);
     setInput('');
   };

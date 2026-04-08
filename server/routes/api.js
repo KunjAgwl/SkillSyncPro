@@ -2,6 +2,7 @@ import express from 'express';
 import { client } from '../config/db.js';
 import { processHybridMatch } from '../services/matchService.js';
 import { executeAgentRequest } from '../services/agentService.js';
+import { generateRoadmap } from '../services/aiService.js';
 
 const router = express.Router();
 
@@ -69,6 +70,21 @@ router.post('/agent', async (req, res) => {
   try {
     const agentResponse = await executeAgentRequest(prompt, resumeText);
     res.json(agentResponse);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 🟢 AI Roadmap Generator
+router.post('/roadmap', async (req, res) => {
+  const { missingSkills, userFeedback, resumeText } = req.body;
+  if (!missingSkills || missingSkills.length === 0) {
+    return res.status(400).json({ error: 'No missing skills provided.' });
+  }
+
+  try {
+    const roadmap = await generateRoadmap(missingSkills, userFeedback, resumeText);
+    res.json(roadmap);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

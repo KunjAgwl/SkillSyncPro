@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab }) => {
+const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab, boostSpecificSkill, triggerHaptic }) => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Hero Profile / Upload Section */}
@@ -22,7 +22,10 @@ const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab }) =>
           </p>
 
           <label className="w-full">
-            <div className={`cursor-pointer flex items-center justify-center gap-2 px-8 py-4 rounded-full neu-button text-primary font-bold text-sm tracking-wide ${isUploading ? 'opacity-50' : ''}`}>
+            <div 
+              onClick={() => !isUploading && triggerHaptic()}
+              className={`cursor-pointer flex items-center justify-center gap-2 px-8 py-4 rounded-full neu-button text-primary font-bold text-sm tracking-wide ${isUploading ? 'opacity-50' : ''}`}
+            >
               <span className="material-symbols-outlined text-[20px]">
                 {isUploading ? 'hourglass_top' : 'add_circle'}
               </span>
@@ -74,16 +77,24 @@ const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab }) =>
                       <p className="text-[10px] font-black text-text-light uppercase tracking-widest">Skills to Build</p>
                       <div className="flex flex-wrap gap-2">
                          {match.missingSkills?.map(s => (
-                           <span key={s} className="px-3 py-1.5 rounded-lg neu-button text-[10px] text-primary font-bold">
+                           <button 
+                             key={s} 
+                             onClick={() => boostSpecificSkill(s)}
+                             className="px-3 py-1.5 rounded-xl neu-button text-[10px] text-primary font-bold hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1 group"
+                           >
+                             <span className="material-symbols-outlined text-[12px] opacity-0 group-hover:opacity-100 transition-opacity">bolt</span>
                              {s}
-                           </span>
+                           </button>
                          ))}
                       </div>
                    </div>
                 </div>
 
                 <button 
-                  onClick={() => setActiveTab('courses')}
+                  onClick={() => {
+                    triggerHaptic();
+                    setActiveTab('courses');
+                  }}
                   className="w-full py-3 rounded-2xl neu-button text-xs font-black uppercase tracking-widest text-text-main hover:text-primary transition-colors"
                 >
                   Launch Skill Boosters

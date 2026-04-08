@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DiscoveryTab = ({ searchQuery, setSearchQuery, fetchDiscoverJobs, allJobs }) => {
+const DiscoveryTab = ({ searchQuery, setSearchQuery, fetchDiscoverJobs, allJobs, triggerHaptic }) => {
   return (
     <div className="space-y-6 animate-fade-in pb-10">
       <div className="flex flex-col gap-2">
@@ -12,6 +12,7 @@ const DiscoveryTab = ({ searchQuery, setSearchQuery, fetchDiscoverJobs, allJobs 
               className="w-full p-4 pl-12 rounded-2xl bg-surface-light dark:bg-surface-dark neu-pressed border-none focus:ring-0 text-sm"
               value={searchQuery}
               onChange={(e) => {
+                triggerHaptic();
                 setSearchQuery(e.target.value);
                 fetchDiscoverJobs(e.target.value);
               }}

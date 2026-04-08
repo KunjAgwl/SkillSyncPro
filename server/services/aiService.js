@@ -146,3 +146,70 @@ export const generateRefinement = async (resumeText, topJobs) => {
     throw err;
   }
 };
+
+/**
+ * NEW: AI SKILL BOOSTER - Generates a 5-step learning roadmap for missing skills
+ */
+export const generateRoadmap = async (missingSkills, userFeedback = '', resumeText = '') => {
+  try {
+    if (!missingSkills || missingSkills.length === 0) return null;
+
+    const roadmapPrompt = `
+      [SYSTEM: JSON BRAIN ONLY]
+      ROLE: You are an expert Technical Mentor.
+      TASK: Create a 5-step learning roadmap to master these missing skills: ${missingSkills.join(', ')}.
+      
+      USER RESUME CONTEXT:
+      ${resumeText ? resumeText.substring(0, 1000) + '...' : 'No resume context provided.'}
+      
+      USER CONSTRAINTS/FEEDBACK: "${userFeedback || 'None provided'}"
+      
+      RULES:
+      1. Each step must have a 'title', 'description', and 'estimated_time'.
+      2. Steps must be in logical order (beginner to advanced).
+      3. CRITICAL: Tailor the 'estimated_time' and 'description' based on the USER CONSTRAINTS and their existing RESUME CONTEXT.
+      4. Return ONLY a JSON object.
+
+      SCHEMA:
+      {
+        "skill_title": "Mastering ${missingSkills[0]} & More",
+        "steps": [
+          { "step": 1, "title": "...", "description": "...", "estimated_time": "..." }
+        ]
+      }
+    `;
+
+    let response;
+    if (AI_CONFIG.TYPE === 'openai') {
+      response = await fetch(AI_CONFIG.BASE_URL, {
+        method: "POST",
+        headers: getAIHeaders(),
+        body: JSON.stringify({
+          model: AI_CONFIG.MODEL,
+          messages: [{ role: "user", content: roadmapPrompt }]
+        })
+      });
+    } else {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.MODEL}:generateContent?key=${AI_CONFIG.API_KEY || GEMINI_API_KEY}`;
+      response = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+           contents: [{ parts: [{ text: roadmapPrompt }] }],
+           generationConfig: { response_mime_type: "application/json" }
+        })
+      });
+    }
+
+    const data = await response.json();
+    let aiText = AI_CONFIG.TYPE === 'openai' ? data.choices[0].message.content : data.candidates[0].content.parts[0].text;
+    
+    // Clean JSON
+    const startIdx = aiText.indexOf('{');
+    const endIdx = aiText.lastIndexOf('}');
+    return JSON.parse(aiText.substring(startIdx, endIdx + 1));
+  } catch (err) {
+    console.error('❌ Roadmap Error:', err.message);
+    return null;
+  }
+};

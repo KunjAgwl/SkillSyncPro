@@ -23,7 +23,14 @@ const App = () => {
     handleFileUpload,
     messages,
     sendMessageToAgent,
-    isAgentThinking
+    isAgentThinking,
+    roadmap,
+    isRoadmapLoading,
+    fetchRoadmap,
+    boostSpecificSkill,
+    targetSkills,
+    setTargetSkills,
+    triggerHaptic
   } = useSkillSync();
 
   return (
@@ -37,6 +44,8 @@ const App = () => {
             handleFileUpload={handleFileUpload} 
             matchData={matchData} 
             setActiveTab={setActiveTab} 
+            boostSpecificSkill={boostSpecificSkill}
+            triggerHaptic={triggerHaptic}
           />
         )}
 
@@ -46,11 +55,20 @@ const App = () => {
             setSearchQuery={setSearchQuery} 
             fetchDiscoverJobs={fetchDiscoverJobs} 
             allJobs={allJobs} 
+            triggerHaptic={triggerHaptic}
           />
         )}
 
         {activeTab === 'courses' && (
-          <CourseTab matchData={matchData} />
+          <CourseTab 
+            matchData={matchData} 
+            roadmap={roadmap} 
+            isRoadmapLoading={isRoadmapLoading} 
+            fetchRoadmap={fetchRoadmap} 
+            targetSkills={targetSkills}
+            setTargetSkills={setTargetSkills}
+            triggerHaptic={triggerHaptic}
+          />
         )}
 
         {activeTab === 'profile' && (
@@ -62,11 +80,16 @@ const App = () => {
             messages={messages} 
             sendMessageToAgent={sendMessageToAgent} 
             isAgentThinking={isAgentThinking} 
+            triggerHaptic={triggerHaptic}
           />
         )}
       </main>
 
-      <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      <BottomNav 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        triggerHaptic={triggerHaptic}
+      />
     </div>
   );
 };
