@@ -2,7 +2,7 @@ import express from 'express';
 import { client } from '../config/db.js';
 import { processHybridMatch } from '../services/matchService.js';
 import { executeAgentRequest } from '../services/agentService.js';
-import { generateRoadmap } from '../services/aiService.js';
+import { generateRoadmap, generateOptimization } from '../services/aiService.js';
 
 const router = express.Router();
 
@@ -85,6 +85,21 @@ router.post('/roadmap', async (req, res) => {
   try {
     const roadmap = await generateRoadmap(missingSkills, userFeedback, resumeText);
     res.json(roadmap);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 🟢 AI Resume Optimizer
+router.post('/optimize', async (req, res) => {
+  const { resumeText, jobDescription } = req.body;
+  if (!resumeText || !jobDescription) {
+    return res.status(400).json({ error: 'Resume text and job description are required.' });
+  }
+
+  try {
+    const optimizedData = await generateOptimization(resumeText, jobDescription);
+    res.json(optimizedData);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

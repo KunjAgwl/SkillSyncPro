@@ -1,8 +1,17 @@
 import React from 'react';
 
-const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab, boostSpecificSkill, triggerHaptic }) => {
+const MatchTab = ({ 
+  isUploading, 
+  handleFileUpload, 
+  matchData, 
+  setActiveTab, 
+  boostSpecificSkill, 
+  triggerHaptic,
+  optimizeResume
+}) => {
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in relative">
+      
       {/* Hero Profile / Upload Section */}
       <section className="relative w-full rounded-[2.5rem] p-8 neu-flat overflow-hidden">
         <div className="absolute -right-6 -top-6 size-32 rounded-full bg-gradient-to-br from-primary/10 to-transparent blur-2xl"></div>
@@ -57,11 +66,30 @@ const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab, boos
                   </div>
                 </div>
 
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => optimizeResume(match.description)}
+                    className="flex-1 py-3 rounded-2xl neu-button text-[10px] font-black text-primary uppercase tracking-widest flex items-center justify-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">auto_fix_high</span>
+                    AI Optimizer
+                  </button>
+                  <button 
+                    onClick={() => {
+                      triggerHaptic();
+                      setActiveTab('courses');
+                    }}
+                    className="size-12 rounded-2xl neu-button flex items-center justify-center text-text-light hover:text-primary transition-all"
+                  >
+                    <span className="material-symbols-outlined">school</span>
+                  </button>
+                </div>
+
                 <p className="text-xs text-text-light dark:text-gray-400 line-clamp-2">
-                  {match.description || "No description provided."}
+                   {match.description || "No description provided."}
                 </p>
 
-                <div className="space-y-4">
+                <div className="space-y-4 pt-2">
                    <div className="space-y-2">
                       <p className="text-[10px] font-black text-text-light uppercase tracking-widest">Matched Skills</p>
                       <div className="flex flex-wrap gap-2">
@@ -89,16 +117,6 @@ const MatchTab = ({ isUploading, handleFileUpload, matchData, setActiveTab, boos
                       </div>
                    </div>
                 </div>
-
-                <button 
-                  onClick={() => {
-                    triggerHaptic();
-                    setActiveTab('courses');
-                  }}
-                  className="w-full py-3 rounded-2xl neu-button text-xs font-black uppercase tracking-widest text-text-main hover:text-primary transition-colors"
-                >
-                  Launch Skill Boosters
-                </button>
               </div>
             ))}
           </div>

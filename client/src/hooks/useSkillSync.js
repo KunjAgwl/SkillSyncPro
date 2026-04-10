@@ -8,40 +8,48 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLi
 const useSkillSync = () => {
   const [activeTab, setActiveTab] = useState('match');
   const [isUploading, setIsUploading] = useState(false);
-  const [matchData, setMatchData] = useState(null);
-  const [resumeText, setResumeText] = useState('');
+  const [matchData, setMatchData] = useState(() => {
+    const saved = localStorage.getItem('ss_matchData');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [resumeText, setResumeText] = useState(() => {
+    return localStorage.getItem('ss_resumeText') || '';
+  });
   const [history, setHistory] = useState([]);
   const [allJobs, setAllJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [roadmap, setRoadmap] = useState(null);
+  const [roadmap, setRoadmap] = useState(null); // Roadmaps are session-specific
   const [isRoadmapLoading, setIsRoadmapLoading] = useState(false);
   const [targetSkills, setTargetSkills] = useState(null);
+  const [optimizationData, setOptimizationData] = useState(() => {
+    const saved = localStorage.getItem('ss_optimizationData');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [isOptimizing, setIsOptimizing] = useState(false);
+
+  // 💾 PERSISTENCE SYNC
+  useEffect(() => {
+    if (matchData) localStorage.setItem('ss_matchData', JSON.stringify(matchData));
+    if (resumeText) localStorage.setItem('ss_resumeText', resumeText);
+    if (optimizationData) localStorage.setItem('ss_optimizationData', JSON.stringify(optimizationData));
+  }, [matchData, resumeText, optimizationData]);
 
   // 📳 Haptic Helper
   const triggerHaptic = async (style = ImpactStyle.Light) => {
     try {
       await Haptics.impact({ style });
-    } catch (e) {
-      // Fallback for web/non-capacitor
-    }
+    } catch (e) {}
   };
 
-  // 🌍 BASE URL: Replace with your LIVE VERCEL URL after deployment!
-  const BASE_API_URL = 'http://10.30.38.68:5000'; // Or your Vercel URL: https://skillsync.vercel.app
+  const BASE_API_URL = 'http://10.39.47.68:5000';
 
-  // Fetch initial data & Heartbeat check
   useEffect(() => {
     const checkConnection = async () => {
       try {
         const response = await fetch(`${BASE_API_URL}/`);
-        if (response.ok) {
-          console.log('💓 SkillSync Backend: CONNECTED');
-        } else {
-          console.warn('⚠️ SkillSync Backend: REACHABLE BUT ERROR');
-        }
+        if (response.ok) console.log('💓 SkillSync Backend: CONNECTED');
       } catch (err) {
-        console.error('❌ SkillSync Backend: UNREACHABLE. Is the server running?');
-        alert('SkillSync Backend Unreachable. Please make sure you ran "node index.js" in the server folder.');
+        console.error('❌ SkillSync Backend: UNREACHABLE');
       }
     };
 
@@ -78,7 +86,7 @@ const useSkillSync = () => {
           matchScore: match.bestMatch.matchScore
         })
       });
-      fetchHistory(); // Refresh the list
+      fetchHistory();
     } catch (err) { console.error('History save error:', err); }
   };
 
@@ -100,39 +108,29 @@ const useSkillSync = () => {
 
     triggerHaptic(ImpactStyle.Medium);
     setIsUploading(true);
-    console.log('📄 Starting upload for:', file.name);
+    
+    // Clear old data for fresh start
+    setOptimizationData(null);
+    localStorage.removeItem('ss_optimizationData');
 
     try {
-      // 1. PDF Parsing
-      console.log('🔍 Extracting PDF text...');
       const text = await extractTextFromPDF(file);
       if (!text || text.length < 10) throw new Error('PDF is empty or could not be read.');
       setResumeText(text);
 
-      // 2. Network Request
-      const apiUrl = `${BASE_API_URL}/api/upload`;
-      console.log('📡 Sending request to:', apiUrl);
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${BASE_API_URL}/api/upload`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resumeText: text })
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server error (${response.status}): ${errorText}`);
-      }
-
-      // 3. Response Processing
       const data = await response.json();
-      console.log('✅ Match successful:', data);
       triggerHaptic(ImpactStyle.Heavy);
       setMatchData(data);
       saveToHistory(data);
     } catch (err) {
-      console.error('❌ SkillSync Upload Error:', err);
-      alert(`SkillSync Error: ${err.message}\n\nPlease check your server console for more details.`);
+      console.error('❌ Upload Error:', err);
+      alert(`SkillSync Error: ${err.message}`);
     } finally {
       setIsUploading(false);
     }
@@ -145,11 +143,8 @@ const useSkillSync = () => {
 
   const sendMessageToAgent = async (prompt) => {
     if (!prompt.trim()) return;
-
     triggerHaptic(ImpactStyle.Light);
-    // 1. Add user message
-    const userMsg = { role: 'user', content: prompt };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages(prev => [...prev, { role: 'user', content: prompt }]);
     setIsAgentThinking(true);
 
     try {
@@ -158,23 +153,17 @@ const useSkillSync = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, resumeText })
       });
-
       const data = await response.json();
-
-      // 2. Add agent response
-      const agentMsg = {
+      triggerHaptic(ImpactStyle.Medium);
+      setMessages(prev => [...prev, {
         role: 'agent',
         content: data.message,
         thought: data.thought,
         results: data.results || [],
         sql: data.sql
-      };
-      triggerHaptic(ImpactStyle.Medium);
-      setMessages(prev => [...prev, agentMsg]);
-
+      }]);
     } catch (err) {
-      console.error('Agent failure:', err);
-      setMessages(prev => [...prev, { role: 'agent', content: "Sorry, I had trouble querying the database.", results: [] }]);
+      setMessages(prev => [...prev, { role: 'agent', content: "Sorry, I had trouble querying the database." }]);
     } finally {
       setIsAgentThinking(false);
     }
@@ -194,7 +183,7 @@ const useSkillSync = () => {
       setRoadmap(data);
       triggerHaptic(ImpactStyle.Heavy);
     } catch (err) {
-      console.error('Roadmap fetch error:', err);
+      console.error('Roadmap error:', err);
     } finally {
       setIsRoadmapLoading(false);
     }
@@ -205,6 +194,27 @@ const useSkillSync = () => {
     setRoadmap(null);
     setTargetSkills([skill]);
     setActiveTab('courses');
+  };
+
+  const optimizeResume = async (jobDescription) => {
+    if (!resumeText || !jobDescription) return;
+    triggerHaptic(ImpactStyle.Medium);
+    setIsOptimizing(true);
+    try {
+      const response = await fetch(`${BASE_API_URL}/api/optimize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resumeText, jobDescription })
+      });
+      const data = await response.json();
+      setOptimizationData(data);
+      triggerHaptic(ImpactStyle.Heavy);
+      setActiveTab('resume');
+    } catch (err) {
+      console.error('Optimization error:', err);
+    } finally {
+      setIsOptimizing(false);
+    }
   };
 
   return {
@@ -228,7 +238,11 @@ const useSkillSync = () => {
     boostSpecificSkill,
     targetSkills,
     setTargetSkills,
-    triggerHaptic
+    triggerHaptic,
+    optimizeResume,
+    optimizationData,
+    isOptimizing,
+    setOptimizationData
   };
 };
 

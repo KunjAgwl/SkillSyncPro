@@ -23,7 +23,7 @@ const BottomNav = ({ activeTab, setActiveTab, triggerHaptic }) => {
   return (
     <div className="fixed bottom-8 left-0 right-0 px-6 z-50">
       <nav className="mx-auto w-full max-w-sm rounded-full neu-flat px-8 py-5 flex items-center justify-between">
-        <NavIcon name="dashboard" active={activeTab === 'profile'} onClick={() => handleNavClick('profile')} />
+        <NavIcon name="article" active={activeTab === 'resume'} onClick={() => handleNavClick('resume')} />
         <NavIcon name="manage_search" active={activeTab === 'discovery'} onClick={() => handleNavClick('discovery')} />
         
         <div className="relative">

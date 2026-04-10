@@ -213,3 +213,67 @@ export const generateRoadmap = async (missingSkills, userFeedback = '', resumeTe
     return null;
   }
 };
+
+/**
+ * NEW: RESUME OPTIMIZER - Tailors a resume for a specific job description
+ */
+export const generateOptimization = async (resumeText, jobDescription) => {
+  try {
+    const optimizationPrompt = `
+      [SYSTEM: JSON BRAIN ONLY]
+      ROLE: You are an expert Resume Writer & Career Coach.
+      TASK: Tailor the provided Resume to match the Job Description.
+      
+      CRITERIA:
+      1. Identify keywords from the job description missing in the resume.
+      2. Rewrite the professional summary to highlight relevant experience.
+      3. For each major experience block, provide 3 "high-impact" bullet points using the STAR method (Situation, Task, Action, Result).
+      
+      USER RESUME: ${resumeText}
+      TARGET JOB: ${jobDescription}
+
+      SCHEMA:
+      {
+        "role_title": "Optimized Title",
+        "new_summary": "Tailored 3-sentence summary",
+        "optimized_experience": [
+          { "company": "...", "bullets": ["Improved X by Y using Z", "..."] }
+        ],
+        "keywords_to_add": ["skill1", "skill2"],
+        "resume_html": "A professional <html> string. CSS REQUIREMENTS: Use a TWO-COLUMN layout. SIDEBAR (250px, dark surface): Contact Info, Skills badges, Education. MAIN COLUMN: Bold Name, Optimized Title, Pro-Summary (modern italic), Experience blocks with clean dividers. FONTS: Inter, Segoe UI, sans-serif. COLORS: Background #ffffff, Accents #e2b96e (gold). STYLE: High-end minimalist recruiter-ready. Ensure 8.5x11in dimensions."
+      }
+    `;
+
+    let response;
+    if (AI_CONFIG.TYPE === 'openai') {
+      response = await fetch(AI_CONFIG.BASE_URL, {
+        method: "POST",
+        headers: getAIHeaders(),
+        body: JSON.stringify({
+          model: AI_CONFIG.MODEL,
+          messages: [{ role: "user", content: optimizationPrompt }]
+        })
+      });
+    } else {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.MODEL}:generateContent?key=${AI_CONFIG.API_KEY || GEMINI_API_KEY}`;
+      response = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+           contents: [{ parts: [{ text: optimizationPrompt }] }],
+           generationConfig: { response_mime_type: "application/json" }
+        })
+      });
+    }
+
+    const data = await response.json();
+    let aiText = AI_CONFIG.TYPE === 'openai' ? data.choices[0].message.content : data.candidates[0].content.parts[0].text;
+    
+    const startIdx = aiText.indexOf('{');
+    const endIdx = aiText.lastIndexOf('}');
+    return JSON.parse(aiText.substring(startIdx, endIdx + 1));
+  } catch (err) {
+    console.error('❌ Optimization Error:', err.message);
+    return null;
+  }
+};
