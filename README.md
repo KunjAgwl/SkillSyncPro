@@ -1,19 +1,12 @@
 <div align="center">
 
-<!-- ✨ AUTHOR CARD ✨ -->
-<table align="center">
-  <tr>
-    <td align="center" style="border: none;">
-      <br />
-      <img src="https://img.shields.io/badge/Made%20with%20%E2%9D%A4%20by-Avdhi%20%26%20Kunj-E2B96E?style=for-the-badge&labelColor=1C1A16" />
-      <br />
-      <p style="font-size: 14px; font-weight: bold; letter-spacing: 2px; color: #E2B96E; text-transform: uppercase; margin-top: 10px;">
-        ✨ Crafted with Passion • Built with Excellence ✨
-      </p>
-      <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png" width="400px" />
-    </td>
-  </tr>
-</table>
+<!-- 🌟 MAGNIFICENT HERO SECTION 🌟 -->
+<br />
+<img src="C:\Users\KUNJ%20AGARWAL\.gemini\antigravity\brain\aef8b070-9371-4acd-a5d5-319da04fb9c2\signature_avdhi_kunj_1775890557295.png" width="450px" />
+<br />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png" width="100%">
+</p>
 
 <br />
 
