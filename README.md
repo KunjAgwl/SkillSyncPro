@@ -1,19 +1,30 @@
 <div align="center">
 
 <!-- 🌟 MAGNIFICENT HERO SECTION 🌟 -->
-<br />
-<img src="C:\Users\KUNJ%20AGARWAL\.gemini\antigravity\brain\aef8b070-9371-4acd-a5d5-319da04fb9c2\signature_avdhi_kunj_1775890557295.png" width="450px" />
-<br />
+<p align="center">
+  <img src="https://img.shields.io/badge/CRAFTED%20WITH%20%E2%9D%A4%EF%B8%8F%20BY-AVDHI%20%26%20KUNJ-E2B96E?style=for-the-badge&labelColor=1C1A16" height="45" />
+</p>
+
+<h2 align="center" style="border: none; margin-top: -10px;">
+  <span style="color: #E2B96E;">✨</span> 
+  <i>Made with Love for the Future of Recruitment</i> 
+  <span style="color: #E2B96E;">✨</span>
+</h2>
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png" width="100%">
 </p>
 
 <br />
 
-![SkillSync Branding](C:\Users\KUNJ%20AGARWAL\.gemini\antigravity\brain\aef8b070-9371-4acd-a5d5-319da04fb9c2\skillsync_branding_preview_1775890335438.png)
+<h1 align="center" style="font-size: 60px; font-weight: 900; letter-spacing: -2px; color: #1C1A16; margin-bottom: 0;">
+  Skill<span style="color: #E2B96E;">Sync</span><span style="color: #E2B96E; opacity: 0.5;">.</span>
+</h1>
+<p align="center" style="font-size: 10px; font-weight: 800; letter-spacing: 5px; color: #948F85; text-transform: uppercase; margin-top: -5px;">
+  Career Intelligence Engine
+</p>
 
-# 💎 SkillSync 
-### *Career Intelligence Engine*
+<br />
 
 [![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Express](https://img.shields.io/badge/Backend-Express-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
