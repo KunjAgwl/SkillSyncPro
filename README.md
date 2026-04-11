@@ -12,8 +12,16 @@
 </h2>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png" width="100%">
+  <b>━━━━━━━━━━━━━━━━━━━━━ ◈ ━━━━━━━━━━━━━━━━━━━━━</b>
 </p>
+
+<br />
+
+<div align="center">
+  <blockquote>
+    "Empowering talent to meet opportunity through the precision of Career Intelligence."
+  </blockquote>
+</div>
 
 <br />
 
@@ -26,14 +34,33 @@
 
 <br />
 
-[![React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
-[![Express](https://img.shields.io/badge/Backend-Express-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
-[![Turso](https://img.shields.io/badge/Database-Turso-00A98F?style=for-the-badge&logo=sqlite)](https://turso.tech/)
-[![Gemini](https://img.shields.io/badge/AI-Google_Gemini-4285F4?style=for-the-badge&logo=google-gemini)](https://deepmind.google/technologies/gemini/)
-
-**SkillSync** is a premium, AI-powered Career Intelligence Engine that bridges the gap between your talent and the industry's most relevant opportunities. Designed with a **Neumorphic (Soft UI)** aesthetic, it offers a tactile, modern experience for job seekers and career builders.
-
+<div align="center">
+  <img src="https://img.shields.io/github/repo-size/KunjAgwl/SkillSyncPro?style=flat-square&color=E2B96E&labelColor=1C1A16" />
+  <img src="https://img.shields.io/github/languages/top/KunjAgwl/SkillSyncPro?style=flat-square&color=E2B96E&labelColor=1C1A16" />
+  <img src="https://img.shields.io/github/last-commit/KunjAgwl/SkillSyncPro?style=flat-square&color=E2B96E&labelColor=1C1A16" />
 </div>
+
+<br />
+
+<div align="center">
+  <a href="#-rapid-deployment">⚡ Quick Start</a> •
+  <a href="#-core-intelligence-modules">🧠 Features</a> •
+  <a href="#-system-pulse--architecture">⚙️ Architecture</a> •
+  <a href="#-the-power-stack">🛠️ Stack</a>
+</div>
+
+<br />
+
+---
+
+## ⚡ Rapid Deployment
+
+Get **SkillSync** up and running in your local environment in four simple steps:
+
+1. **Clone the Core**: `git clone https://github.com/KunjAgwl/SkillSyncPro.git`
+2. **Ignite Backend**: `cd server && npm install && npm run dev`
+3. **Launch Frontend**: `cd client && npm install && npm run dev`
+4. **Initialize DB**: Ensure your `.env` contains your Turso & Gemini credentials.
 
 ---
 
@@ -94,6 +121,22 @@ SkillSync embraces the **Neumorphic** design trend, focusing on soft shadows, or
 
 ---
 
+## 🔍 The Directory X-Ray
+
+```bash
+SkillSync/
+├── client/                 # 🖼️ Frontend Engine (React + Vite)
+│   ├── src/components/     # 🧩 Modular UI Components
+│   └── src/tabs/           # 📑 Primary Feature Controllers
+├── server/                 # 🧠 Intelligence Hub (Node + Express)
+│   ├── routes/             # 📡 API Gateway
+│   ├── services/           # 🧬 Core AI & Search Logic
+│   └── config/             # 🗄️ Database Orchestration
+└── ...                     # 🔧 Project Meta & Config
+```
+
+---
+
 ## 🧠 System Pulse & Architecture
 
 ```mermaid
@@ -136,10 +179,24 @@ graph LR
 
 ---
 
-## 🚀 Getting Started
+## 🛰️ Future Velocity
+
+- [ ] [**Q3 2026**] **Multimodal Analysis**: Support for video resumes and portfolio scanning.
+- [ ] [**Q4 2026**] **Auto-Apply Agent**: Autonomous job application workflow.
+- [ ] [**Q1 2027**] **Web3 Credentialing**: On-chain skill verification via SkillSync Proofs.
+
+---
+
+## 🚀 Knowledge Hub
 
 Check out the detailed documentation for each layer:
 
 - 🏗️ **[Backend Guide](BACKEND.md)**: Routes, Services, and AI Pipelines.
 - 🗄️ **[Database Guide](DB_ARCHITECTURE.md)**: Vector schema and SQL indexing.
 
+---
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/cloudy.png" width="100%">
+  <p><i>Building the future of recruitment, one vector at a time.</i></p>
+</div>
