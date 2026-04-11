@@ -37,27 +37,50 @@
 
 ---
 
-## ✨ Key Features
+## ✨ Core Intelligence Modules
 
-### 🎯 Precision Matching
-- **Semantic Vector Search**: Uses **3072-dimensional embeddings** to match your resume against thousands of jobs based on *meaning*, not just keywords.
-- **Skill Boosting**: Dynamically adjust weights for specific skills to see how "upskilling" changes your compatibility in real-time.
-
-### 🤖 Agentic Career Coach
-- **AI Concierge**: An interactive agent that understands your professional profile.
-- **Deep Insights**: Ask why you were matched, what's missing, or how to pivot your career path.
-
-### 🗺️ Intelligent Roadmaps
-- **Gap Analysis**: Identifies exactly which skills are keeping you from your dream job.
-- **Curated Learning**: Generates structured milestones, specific resources, and realistic timelines to bridge those gaps.
-
-### 📝 Resume Optimization
-- **Context-Aware Rewriting**: Automatically rewrites your resume bullet points to better align with specific job descriptions.
-- **Impact Maximization**: Focuses on quantifying achievements and highlighting relevant tech stacks.
-
-### 📱 PWA & Mobile Native
-- **Cross-Platform**: Built with **Capacitor** for a seamless mobile experience.
-- **Haptic Feedback**: Tactile responses for every major interaction, creating a premium "app-like" feel.
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🎯 Precision Matcher</h3>
+      <p><i>3072-Dimensional Vector Analysis</i></p>
+      <ul>
+        <li>Semantic context understanding</li>
+        <li>Real-time weight boosting</li>
+        <li>Hybrid keyword fallback</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🤖 Career Concierge</h3>
+      <p><i>Multi-Turn Agentic Reasoning</i></p>
+      <ul>
+        <li>Interactive profile interviews</li>
+        <li>Gaps-to-Goals analysis</li>
+        <li>Personalized pivot coaching</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🗺️ Skill Roadmaps</h3>
+      <p><i>Hyper-Curated Learning Paths</i></p>
+      <ul>
+        <li>Automatic milestone generation</li>
+        <li>Direct resource linking</li>
+        <li>Timeline estimation logic</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <h3>✍️ Resume Alchemist</h3>
+      <p><i>Contextual Bullet Optimization</i></p>
+      <ul>
+        <li>Job-specific rewriting</li>
+        <li>Impact-focused phrasing</li>
+        <li>Tech-stack prioritization</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -71,29 +94,45 @@ SkillSync embraces the **Neumorphic** design trend, focusing on soft shadows, or
 
 ---
 
-## 🏗️ Technical Architecture
+## 🧠 System Pulse & Architecture
 
 ```mermaid
-graph TD
-    User((User)) -->|Upload Resume| Frontend[React PWA]
-    Frontend -->|POST /upload| Backend[Express API]
-    Backend -->|Text Chunking| Gemini[Google Gemini AI]
-    Gemini -->|3072D Vector| Backend
-    Backend -->|Vector Search| Turso[(Turso LibSQL)]
-    Turso -->|Top 15 Matches| Backend
-    Backend -->|JSON Payload| Frontend
+graph LR
+    A[User Resume] --> B(Gemini Embeddings);
+    B --> C{Vector Search};
+    C --> D[Turso LibSQL];
+    D --> E[Top Matches];
+    E --> F(Agentic Analysis);
+    F --> G[Roadmap / Resume];
 ```
+
+<br />
+
+<div align="center">
+  <img src="https://img.shields.io/badge/System_Health-Operational-success?style=for-the-badge&labelColor=1C1A16&color=E2B96E" />
+  <img src="https://img.shields.io/badge/AI_Core-Gemini_Pro-success?style=for-the-badge&labelColor=1C1A16&color=E2B96E" />
+  <img src="https://img.shields.io/badge/UX_State-Neumorphic-success?style=for-the-badge&labelColor=1C1A16&color=E2B96E" />
+</div>
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ The Power Stack
 
-- **Frontend**: Vite + React + Tailwind CSS (Custom Neumorphic Utilities)
-- **Backend**: Node.js + Express.js
-- **Database**: Turso (LibSQL) with Native Vector Support
-- **AI**: Google Gemini Pro (Text & Embeddings)
-- **Mobile**: Capacitor.js
-- **Icons**: Google Material Symbols
+<p align="center">
+  <b>Frontend Engine</b><br/>
+  <img src="https://img.shields.io/badge/React_18-20232A?style=flat-square&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Capacitor-119EFF?style=flat-square&logo=capacitor&logoColor=white" />
+</p>
+
+<p align="center">
+  <b>Backend & Intelligence</b><br/>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/Turso-00A98F?style=flat-square&logo=sqlite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=flat-square&logo=google-gemini&logoColor=white" />
+</p>
 
 ---
 
