@@ -10,10 +10,10 @@ const MatchTab = ({
   optimizeResume
 }) => {
   return (
-    <div className="space-y-8 animate-fade-in relative">
+    <div className="space-y-8 animate-fade-in relative lg:space-y-0 lg:grid lg:grid-cols-[340px_1fr] lg:gap-8 lg:items-start">
       
       {/* Hero Profile / Upload Section */}
-      <section className="relative w-full rounded-[2.5rem] p-8 neu-flat overflow-hidden">
+      <section className="relative w-full rounded-[2.5rem] p-8 neu-flat overflow-hidden lg:sticky lg:top-10">
         <div className="absolute -right-6 -top-6 size-32 rounded-full bg-gradient-to-br from-primary/10 to-transparent blur-2xl"></div>
         
         <div className="relative z-10 flex flex-col items-center text-center">
@@ -53,7 +53,7 @@ const MatchTab = ({
         </div>
 
         {matchData ? (
-          <div className="space-y-6">
+          <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-1 xl:grid-cols-2 lg:gap-6">
             {matchData.allMatches?.map((match, idx) => (
               <div key={idx} className="rounded-[2rem] p-6 neu-flat space-y-4">
                 <div className="flex justify-between items-start">

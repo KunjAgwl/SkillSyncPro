@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useSkillSync from './hooks/useSkillSync';
 import Header from './components/Header';
 import BottomNav from './components/BottomNav';
+import Sidebar from './components/Sidebar';
 import MatchTab from './components/tabs/MatchTab';
 import DiscoveryTab from './components/tabs/DiscoveryTab';
 import CourseTab from './components/tabs/CourseTab';
@@ -110,13 +111,14 @@ const App = () => {
   // 📱 MAIN APP
   return (
     <>
-      <div className="relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-x-hidden pb-40">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} triggerHaptic={triggerHaptic} />
+      <div className="relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-x-hidden pb-40 lg:max-w-none lg:mx-0 lg:pl-64 lg:pb-10">
         <Header onProfileClick={() => {
           triggerHaptic();
           setActiveTab('profile');
         }} />
 
-        <main className="flex-1 px-6">
+        <main className="flex-1 px-6 lg:w-full lg:max-w-6xl lg:mx-auto lg:px-12 lg:pt-10">
           {activeTab === 'match' && (
             <MatchTab 
               isUploading={isUploading} 

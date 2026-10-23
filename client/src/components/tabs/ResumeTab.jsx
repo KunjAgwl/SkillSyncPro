@@ -11,7 +11,7 @@ const ResumeTab = ({ optimizationData, isOptimizing, triggerHaptic }) => {
         const containerWidth = containerRef.current.offsetWidth - 24;
         const resumeWidth = 850; 
         const newScale = containerWidth / resumeWidth;
-        setScale(Math.max(newScale * 0.9, 0.5)); 
+        setScale(Math.min(Math.max(newScale * 0.9, 0.5), 1)); 
       };
       updateScale();
       window.addEventListener('resize', updateScale);
@@ -89,7 +89,7 @@ const ResumeTab = ({ optimizationData, isOptimizing, triggerHaptic }) => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in pb-10 px-2" ref={containerRef}>
+    <div className="space-y-6 animate-fade-in pb-10 px-2 lg:max-w-4xl lg:mx-auto" ref={containerRef}>
       <div className="flex items-center justify-between">
         <div className="flex flex-col text-left">
           <h2 className="text-2xl font-black text-text-main dark:text-white leading-tight">Resume Lab</h2>
@@ -104,7 +104,7 @@ const ResumeTab = ({ optimizationData, isOptimizing, triggerHaptic }) => {
         </button>
       </div>
 
-      <div className="w-full rounded-[2.5rem] neu-flat p-4 overflow-hidden relative" style={{ height: '560px' }}>
+      <div className="w-full rounded-[2.5rem] neu-flat p-4 overflow-hidden relative h-[560px] lg:h-[calc(100vh-240px)]">
         <div className="w-full h-full overflow-x-auto overflow-y-auto no-scrollbar flex items-start justify-start">
           <div
             style={{

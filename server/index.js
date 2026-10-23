@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { initDB } from './config/db.js';
 import apiRoutes from './routes/api.js';
+import { bootstrapJobs } from './services/bootstrapService.js';
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ initDB().then(() => {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 SkillSync Backend Live on http://0.0.0.0:${PORT}`);
   });
+  bootstrapJobs().catch((err) => console.error('❌ Job bootstrap failed:', err.message));
 }).catch(err => {
   console.error('❌ Failed to bootstrap SkillSync:', err.message);
 });

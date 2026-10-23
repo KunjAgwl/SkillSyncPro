@@ -10,7 +10,7 @@ const CourseTab = ({ matchData, roadmap, isRoadmapLoading, fetchRoadmap, targetS
   };
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20 max-w-md mx-auto no-scrollbar">
+    <div className="space-y-8 animate-fade-in pb-20 max-w-md lg:max-w-3xl mx-auto no-scrollbar">
       {/* 🚀 Header Section */}
       <div className="flex flex-col gap-1.5 pt-4">
         <div className="flex items-center gap-2 text-primary">

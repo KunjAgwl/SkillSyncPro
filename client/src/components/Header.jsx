@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = ({ onProfileClick }) => {
   return (
-    <header className="flex items-center justify-between px-6 pt-10 pb-6">
+    <header className="flex items-center justify-between px-6 pt-10 pb-6 lg:hidden">
       <div className="flex items-center gap-4">
         <div className="size-12 flex items-center justify-center rounded-full neu-flat text-primary">
           <span className="material-symbols-outlined text-[24px]">work_history</span>

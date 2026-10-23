@@ -1,5 +1,5 @@
 import express from 'express';
-import { client } from '../config/db.js';
+import { query } from '../config/db.js';
 import { processHybridMatch } from '../services/matchService.js';
 import { executeAgentRequest } from '../services/agentService.js';
 import { generateRoadmap, generateOptimization } from '../services/aiService.js';
@@ -26,12 +26,10 @@ router.get('/jobs', async (req, res) => {
     let sql = 'SELECT id, title, company, description, skills FROM jobs';
     let args = [];
     if (q) {
-      sql += ' WHERE title LIKE ? OR company LIKE ? OR description LIKE ?';
-      const searchTerm = `%${q}%`;
-      args = [searchTerm, searchTerm, searchTerm];
+      sql += ' WHERE title ILIKE $1 OR company ILIKE $1 OR description ILIKE $1';
+      args = [`%${q}%`];
     }
-    const result = await client.execute({ sql, args });
-    res.json(result.rows);
+    res.json(await query(sql, args));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -40,8 +38,7 @@ router.get('/jobs', async (req, res) => {
 // 🟢 Scan History (Retrieval)
 router.get('/history', async (req, res) => {
   try {
-    const result = await client.execute('SELECT * FROM scan_history ORDER BY created_at DESC LIMIT 50');
-    res.json(result.rows);
+    res.json(await query('SELECT * FROM scan_history ORDER BY created_at DESC LIMIT 50'));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -51,11 +48,11 @@ router.get('/history', async (req, res) => {
 router.post('/history', async (req, res) => {
   const { resumeSummary, topMatchTitle, topMatchCompany, matchScore } = req.body;
   try {
-    await client.execute({
-      sql: `INSERT INTO scan_history (resume_summary, top_match_title, top_match_company, match_score) 
-            VALUES (?, ?, ?, ?)`,
-      args: [resumeSummary, topMatchTitle, topMatchCompany, matchScore]
-    });
+    await query(
+      `INSERT INTO scan_history (resume_summary, top_match_title, top_match_company, match_score)
+       VALUES ($1, $2, $3, $4)`,
+      [resumeSummary, topMatchTitle, topMatchCompany, matchScore]
+    );
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

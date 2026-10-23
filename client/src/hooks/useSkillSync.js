@@ -41,7 +41,7 @@ const useSkillSync = () => {
     } catch (e) {}
   };
 
-  const BASE_API_URL = 'http://10.39.47.68:5000';
+  const BASE_API_URL = 'https://skillsyncpro.onrender.com';
 
   useEffect(() => {
     const checkConnection = async () => {

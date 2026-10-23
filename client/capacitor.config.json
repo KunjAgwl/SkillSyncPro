@@ -4,7 +4,6 @@
   "webDir": "dist",
   "bundledWebRuntime": false,
   "server": {
-    "cleartext": true,
-    "allowNavigation": ["10.39.47.68"]
+    "allowNavigation": ["skillsyncpro.onrender.com"]
   }
 }

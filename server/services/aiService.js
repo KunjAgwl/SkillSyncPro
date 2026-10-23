@@ -1,35 +1,8 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-import { AI_CONFIG, getAIHeaders } from '../config/aiConfig.js';
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const LOGS_DIR = path.join(process.cwd(), 'logs');
-
-// Ensure logs directory exists
-const ensureLogDir = async () => {
-    try { await fs.mkdir(LOGS_DIR, { recursive: true }); } catch (e) {}
-};
+import { embedText, generateText, extractJSON } from './bedrock.js';
 
 export const generateEmbedding = async (text) => {
   try {
-    const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2-preview:embedContent?key=${GEMINI_API_KEY}`;
-    const response = await fetch(embedUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: { parts: [{ text }] } })
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Embedding API Failed: ${errText}`);
-    }
-
-    const data = await response.json();
-    return data.embedding.values;
+    return await embedText(text);
   } catch (err) {
     console.error('❌ AI Embedding Service Error:', err.message);
     throw err;
@@ -68,79 +41,8 @@ export const generateRefinement = async (resumeText, topJobs) => {
       [FINAL REMINDER: ZERO TEXT OUTSIDE JSON. BEGIN NOW.]
     `;
 
-    let response;
-    
-    // 🔗 1. Handle UNIVERSAL OPENAI-COMPATIBLE PROVIDERS (OpenRouter, Cerebras, DeepSeek)
-    if (AI_CONFIG.TYPE === 'openai') {
-      response = await fetch(AI_CONFIG.BASE_URL, {
-        method: "POST",
-        headers: getAIHeaders(),
-        body: JSON.stringify({
-          model: AI_CONFIG.MODEL,
-          messages: [
-            { role: "system", content: "You are a professional technical recruiter. Return responses ONLY in valid JSON format." },
-            { role: "user", content: refinementPrompt }
-          ]
-        })
-      });
-    } 
-    // 🔗 2. Handle NATIVE GOOGLE GEMINI API
-    else {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.MODEL}:generateContent?key=${AI_CONFIG.API_KEY || GEMINI_API_KEY}`;
-      response = await fetch(geminiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          contents: [{ parts: [{ text: refinementPrompt }] }],
-          generationConfig: { response_mime_type: "application/json" }
-        })
-      });
-    }
-
-    if (!response.ok) {
-       const errBody = await response.text();
-       console.error('🧪 DEBUG: AI API REJECTED REQUEST:', errBody);
-       throw new Error(`AI API Error (${response.status}): ${errBody}`);
-    }
-
-    const data = await response.json();
-    
-    // 📁 1. LOG THE FULL RESPONSE (FOR DEBUGGING)
-    await ensureLogDir();
-    await fs.writeFile(path.join(LOGS_DIR, 'debug_full_response.json'), JSON.stringify(data, null, 2), 'utf8');
-    console.log('📝 FULL AI RESPONSE LOGGED TO: logs/debug_full_response.json');
-
-    // 🛡️ 2. DEFENSIVE PARSING (PREVENT "UNDEFINED [0]" CRASH)
-    let aiText = '';
-    if (AI_CONFIG.TYPE === 'openai') {
-      if (!data.choices || data.choices.length === 0) {
-        console.error('❌ OPENROUTER RETURNED NO CHOICES:', JSON.stringify(data));
-        throw new Error("AI API Error: No completion choices returned. Check logs/debug_full_response.json");
-      }
-      aiText = data.choices[0].message.content;
-    } else {
-      if (!data.candidates || data.candidates.length === 0) {
-        console.error('❌ GEMINI RETURNED NO CANDIDATES:', JSON.stringify(data));
-        throw new Error("AI API Error: No completion candidates returned. Check logs/debug_full_response.json");
-      }
-      aiText = data.candidates[0].content.parts[0].text;
-    }
-    // 🛡️ BULLETPROOF JSON EXTRACTION
-    const startIdx = aiText.indexOf('{');
-    const endIdx = aiText.lastIndexOf('}');
-    if (startIdx === -1 || endIdx === -1) {
-       console.error('❌ AI returned non-JSON text:', aiText);
-       throw new Error("AI failed to return valid JSON structure.");
-    }
-    
-    const cleanedJson = aiText.substring(startIdx, endIdx + 1).trim();
-    const parsedData = JSON.parse(cleanedJson);
-
-    // 📁 Save Raw AI JSON to separate file
-    await fs.writeFile(path.join(LOGS_DIR, 'refinement_raw.json'), JSON.stringify(parsedData, null, 2), 'utf8');
-    console.log(`📝 Parsed JSON output (${AI_CONFIG.MODEL}) saved to: logs/refinement_raw.json`);
-
-    return parsedData;
+    const aiText = await generateText(refinementPrompt, 'You are a professional technical recruiter. Return responses ONLY in valid JSON format.');
+    return extractJSON(aiText);
   } catch (err) {
     console.error('❌ AI Refinement Error:', err.message);
     throw err;
@@ -148,7 +50,7 @@ export const generateRefinement = async (resumeText, topJobs) => {
 };
 
 /**
- * NEW: AI SKILL BOOSTER - Generates a 5-step learning roadmap for missing skills
+ * AI SKILL BOOSTER - Generates a 5-step learning roadmap for missing skills
  */
 export const generateRoadmap = async (missingSkills, userFeedback = '', resumeText = '') => {
   try {
@@ -179,35 +81,7 @@ export const generateRoadmap = async (missingSkills, userFeedback = '', resumeTe
       }
     `;
 
-    let response;
-    if (AI_CONFIG.TYPE === 'openai') {
-      response = await fetch(AI_CONFIG.BASE_URL, {
-        method: "POST",
-        headers: getAIHeaders(),
-        body: JSON.stringify({
-          model: AI_CONFIG.MODEL,
-          messages: [{ role: "user", content: roadmapPrompt }]
-        })
-      });
-    } else {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.MODEL}:generateContent?key=${AI_CONFIG.API_KEY || GEMINI_API_KEY}`;
-      response = await fetch(geminiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-           contents: [{ parts: [{ text: roadmapPrompt }] }],
-           generationConfig: { response_mime_type: "application/json" }
-        })
-      });
-    }
-
-    const data = await response.json();
-    let aiText = AI_CONFIG.TYPE === 'openai' ? data.choices[0].message.content : data.candidates[0].content.parts[0].text;
-    
-    // Clean JSON
-    const startIdx = aiText.indexOf('{');
-    const endIdx = aiText.lastIndexOf('}');
-    return JSON.parse(aiText.substring(startIdx, endIdx + 1));
+    return extractJSON(await generateText(roadmapPrompt, 'You are an expert technical mentor. Return responses ONLY in valid JSON format.'));
   } catch (err) {
     console.error('❌ Roadmap Error:', err.message);
     return null;
@@ -215,7 +89,7 @@ export const generateRoadmap = async (missingSkills, userFeedback = '', resumeTe
 };
 
 /**
- * NEW: RESUME OPTIMIZER - Tailors a resume for a specific job description
+ * RESUME OPTIMIZER - Tailors a resume for a specific job description
  */
 export const generateOptimization = async (resumeText, jobDescription) => {
   try {
@@ -244,34 +118,7 @@ export const generateOptimization = async (resumeText, jobDescription) => {
       }
     `;
 
-    let response;
-    if (AI_CONFIG.TYPE === 'openai') {
-      response = await fetch(AI_CONFIG.BASE_URL, {
-        method: "POST",
-        headers: getAIHeaders(),
-        body: JSON.stringify({
-          model: AI_CONFIG.MODEL,
-          messages: [{ role: "user", content: optimizationPrompt }]
-        })
-      });
-    } else {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.MODEL}:generateContent?key=${AI_CONFIG.API_KEY || GEMINI_API_KEY}`;
-      response = await fetch(geminiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-           contents: [{ parts: [{ text: optimizationPrompt }] }],
-           generationConfig: { response_mime_type: "application/json" }
-        })
-      });
-    }
-
-    const data = await response.json();
-    let aiText = AI_CONFIG.TYPE === 'openai' ? data.choices[0].message.content : data.candidates[0].content.parts[0].text;
-    
-    const startIdx = aiText.indexOf('{');
-    const endIdx = aiText.lastIndexOf('}');
-    return JSON.parse(aiText.substring(startIdx, endIdx + 1));
+    return extractJSON(await generateText(optimizationPrompt, 'You are an expert resume writer. Return responses ONLY in valid JSON format.'));
   } catch (err) {
     console.error('❌ Optimization Error:', err.message);
     return null;

@@ -1,4 +1,4 @@
-import { client } from '../config/db.js';
+import { query } from '../config/db.js';
 import { generateEmbedding, generateRefinement } from './aiService.js';
 
 export const processHybridMatch = async (resumeText) => {
@@ -7,14 +7,14 @@ export const processHybridMatch = async (resumeText) => {
     const resumeVector = await generateEmbedding(resumeText);
 
     // Step 2: Semantic Search (Top 15 Jobs)
-    const searchResult = await client.execute({
-      sql: `SELECT d.id, d.title, d.company, d.description 
-            FROM vector_top_k('jobs_idx', vector(?), 15) AS v
-            JOIN jobs AS d ON d.rowid = v.id`,
-      args: [JSON.stringify(resumeVector)]
-    });
-
-    const topJobs = searchResult.rows;
+    const topJobs = await query(
+      `SELECT id, title, company, description
+       FROM jobs
+       WHERE embedding IS NOT NULL
+       ORDER BY embedding <=> $1::vector
+       LIMIT 15`,
+      [JSON.stringify(resumeVector)]
+    );
     if (topJobs.length === 0) throw new Error('No jobs found in database for search.');
 
     // Step 3: LLM Refinement

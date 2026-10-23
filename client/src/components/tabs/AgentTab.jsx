@@ -20,7 +20,7 @@ const AgentTab = ({ messages, sendMessageToAgent, isAgentThinking, triggerHaptic
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-280px)] animate-fade-in relative">
+    <div className="flex flex-col h-[calc(100vh-280px)] lg:h-[calc(100vh-140px)] lg:max-w-3xl lg:mx-auto lg:w-full animate-fade-in relative">
       
       {/* Messaging Area */}
       <div className="flex-1 overflow-y-auto px-2 space-y-6 pb-20 no-scrollbar">
@@ -35,7 +35,7 @@ const AgentTab = ({ messages, sendMessageToAgent, isAgentThinking, triggerHaptic
               </div>
             )}
 
-            <div className={`max-w-[85%] p-4 rounded-3xl ${
+            <div className={`max-w-[85%] lg:max-w-[70%] p-4 rounded-3xl ${
               msg.role === 'user' 
                 ? 'neu-button text-primary font-medium' 
                 : 'neu-flat text-text-main dark:text-gray-200'
