@@ -1,5 +1,5 @@
 import { queryReadOnly } from '../config/db.js';
-import { generateText } from './bedrock.js';
+import { generateText } from './gemini.js';
 
 export const executeAgentRequest = async (userPrompt, resumeText = '') => {
   try {

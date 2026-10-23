@@ -1,4 +1,4 @@
-import { embedText, generateText, extractJSON } from './bedrock.js';
+import { embedText, generateText, extractJSON } from './gemini.js';
 
 export const generateEmbedding = async (text) => {
   try {

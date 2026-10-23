@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { query, ensureSchema } from '../config/db.js';
-import { embedText } from '../services/bedrock.js';
+import { embedText } from '../services/gemini.js';
 
 dotenv.config();
 

@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { query } from '../config/db.js';
-import { embedText } from './bedrock.js';
+import { embedText } from './gemini.js';
 
 const JOBS_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data', 'jobs.json');
 
@@ -33,7 +33,7 @@ export const bootstrapJobs = async () => {
 
   const pending = await query('SELECT id, title, description FROM jobs WHERE embedding IS NULL');
   if (pending.length === 0) return;
-  console.log(`🧠 Bootstrap: embedding ${pending.length} jobs with Bedrock...`);
+  console.log(`🧠 Bootstrap: embedding ${pending.length} jobs with Gemini...`);
   let done = 0;
   for (const job of pending) {
     try {

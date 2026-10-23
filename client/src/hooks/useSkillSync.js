@@ -41,12 +41,13 @@ const useSkillSync = () => {
     } catch (e) {}
   };
 
-  const BASE_API_URL = 'https://skillsyncpro.onrender.com';
+  // Same-origin: CloudFront routes /api/* to the AWS Lambda API (override with VITE_API_URL for local dev)
+  const BASE_API_URL = import.meta.env.VITE_API_URL ?? '';
 
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const response = await fetch(`${BASE_API_URL}/`);
+        const response = await fetch(`${BASE_API_URL}/api/history`);
         if (response.ok) console.log('💓 SkillSync Backend: CONNECTED');
       } catch (err) {
         console.error('❌ SkillSync Backend: UNREACHABLE');
